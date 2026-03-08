@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Neo Expert Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:#009876; --green-dark:#007a5e; --green-wash:#f0faf7;
+    --yellow:#FFB838; --yellow-wash:#fffbf0;
+    --ink:#1a1a1a; --ink-mid:#4E4A47; --ink-light:#7a7673;
+    --rule:#e2ddd8; --bg:#faf9f7; --card:#ffffff;
+    --red:#c0392b; --red-wash:#fdf0ee;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{min-height:100%;font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--ink);}
+
+  /* ── INTRO ── */
+  .intro{
+    min-height:100dvh;background:var(--ink);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:calc(var(--safe-top) + 48px) 32px calc(var(--safe-bottom) + 48px);
+    text-align:center;
+  }
+  .intro-mark{
+    width:72px;height:72px;border:2px solid rgba(255,255,255,0.15);border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    margin:0 auto 28px;
+  }
+  .m-cafe{font-size:6px;font-weight:800;letter-spacing:.15em;color:rgba(255,255,255,0.35);text-transform:uppercase;}
+  .m-neo{font-size:22px;font-weight:800;color:#fff;letter-spacing:.04em;line-height:1;}
+  .m-rule{width:16px;height:1px;background:var(--green);margin:3px 0;}
+  .m-eatery{font-size:5px;font-weight:800;letter-spacing:.15em;color:rgba(255,255,255,0.3);text-transform:uppercase;}
+  .intro-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(0,152,118,0.15);border:1px solid rgba(0,152,118,0.3);
+    border-radius:20px;padding:6px 14px;margin-bottom:20px;
+  }
+  .intro-badge span{font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--green);}
+  .intro-title{font-size:32px;font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.1;margin-bottom:14px;}
+  .intro-title em{color:var(--green);font-style:normal;}
+  .intro-sub{
+    font-size:13px;font-weight:500;color:rgba(255,255,255,.45);
+    line-height:1.75;margin-bottom:36px;max-width:300px;
+  }
+  .intro-sub strong{color:rgba(255,255,255,.75);font-weight:700;}
+  .intro-stats{display:flex;gap:0;margin-bottom:40px;border:1px solid rgba(255,255,255,.1);border-radius:4px;overflow:hidden;}
+  .intro-stat{flex:1;padding:16px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.1);}
+  .intro-stat:last-child{border-right:none;}
+  .intro-stat-num{font-size:24px;font-weight:800;color:#fff;line-height:1;}
+  .intro-stat-label{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:4px;}
+  .intro-start{
+    width:100%;max-width:320px;padding:18px;background:var(--green);color:#fff;
+    border:none;border-radius:4px;font-family:'Montserrat',sans-serif;
+    font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    cursor:pointer;transition:background .15s;margin-bottom:12px;
+  }
+  .intro-start:active{background:var(--green-dark);}
+
+  /* ── QUIZ SCREEN ── */
+  .quiz-screen{display:none;min-height:100dvh;flex-direction:column;}
+
+  .quiz-header{
+    background:var(--ink);padding:calc(var(--safe-top) + 16px) 22px 16px;
+    position:sticky;top:0;z-index:50;flex-shrink:0;
+  }
+  .qh-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .qh-back{color:rgba(255,255,255,.35);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;}
+  .qh-back:active{color:rgba(255,255,255,.7);}
+  .qh-counter{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.06em;}
+  .qh-score{font-size:10px;font-weight:800;color:var(--green);letter-spacing:.06em;}
+  .progress-track{height:3px;background:rgba(255,255,255,.1);border-radius:2px;}
+  .progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .5s cubic-bezier(.32,.72,0,1);}
+
+  .quiz-body{flex:1;padding:28px 22px calc(40px + var(--safe-bottom));}
+
+  .q-category{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:8px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--green);margin-bottom:12px;
+  }
+  .q-text{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.35;margin-bottom:28px;color:var(--ink);}
+
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{
+    display:flex;align-items:center;gap:14px;
+    padding:16px 18px;background:var(--card);
+    border:1.5px solid var(--rule);border-radius:4px;
+    cursor:pointer;transition:all .15s;
+    font-size:13px;font-weight:600;color:var(--ink-mid);line-height:1.5;
+  }
+  .option:active{border-color:var(--green);background:var(--green-wash);}
+  .option.selected-correct{border-color:var(--green);background:var(--green-wash);color:var(--green-dark);pointer-events:none;}
+  .option.selected-wrong{border-color:var(--red);background:var(--red-wash);color:var(--red);pointer-events:none;}
+  .option.reveal-correct{border-color:var(--green);background:var(--green-wash);color:var(--green-dark);pointer-events:none;}
+  .option.disabled{pointer-events:none;opacity:.5;}
+  .opt-letter{
+    width:28px;height:28px;border-radius:50%;border:1.5px solid var(--rule);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--ink-light);
+    flex-shrink:0;transition:all .15s;
+  }
+  .option.selected-correct .opt-letter{background:var(--green);border-color:var(--green);color:#fff;}
+  .option.selected-wrong .opt-letter{background:var(--red);border-color:var(--red);color:#fff;}
+  .option.reveal-correct .opt-letter{background:var(--green);border-color:var(--green);color:#fff;}
+
+  .feedback{
+    margin-top:20px;padding:16px 18px;border-radius:4px;
+    font-size:12px;font-weight:600;line-height:1.65;
+    display:none;animation:fadeUp .25s ease both;
+  }
+  .feedback.correct{background:var(--green-wash);border-left:3px solid var(--green);color:var(--green-dark);}
+  .feedback.wrong{background:var(--red-wash);border-left:3px solid var(--red);color:var(--red);}
+  .feedback-label{font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;}
+  .feedback.correct .feedback-label{color:var(--green);}
+  .feedback.wrong .feedback-label{color:var(--red);}
+
+  .next-btn{
+    display:none;width:100%;margin-top:16px;padding:16px;
+    background:var(--ink);color:#fff;border:none;border-radius:4px;
+    font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+    transition:background .15s;animation:fadeUp .25s ease both;
+  }
+  .next-btn:active{background:#333;}
+
+  /* ── RESULTS ── */
+  .results-screen{
+    display:none;min-height:100dvh;flex-direction:column;align-items:center;
+    justify-content:center;padding:calc(var(--safe-top)+48px) 28px calc(var(--safe-bottom)+48px);
+    text-align:center;
+  }
+  .results-screen.expert{background:var(--ink);}
+  .results-screen.great{background:var(--ink);}
+  .results-screen.good{background:var(--bg);}
+  .results-screen.keep-going{background:var(--bg);}
+
+  .result-icon{font-size:56px;margin-bottom:16px;}
+  .result-rule{width:32px;height:2px;margin:0 auto 20px;}
+  .results-screen.expert .result-rule,.results-screen.great .result-rule{background:var(--green);}
+  .results-screen.good .result-rule,.results-screen.keep-going .result-rule{background:var(--rule);}
+
+  .result-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    border-radius:20px;padding:7px 16px;margin-bottom:14px;
+    font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  }
+  .results-screen.expert .result-badge,.results-screen.great .result-badge{background:rgba(0,152,118,0.2);color:var(--green);border:1px solid rgba(0,152,118,0.3);}
+  .results-screen.good .result-badge,.results-screen.keep-going .result-badge{background:var(--yellow-wash);color:#b88000;border:1px solid rgba(255,184,56,0.4);}
+
+  .result-title{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:10px;}
+  .results-screen.expert .result-title,.results-screen.great .result-title{color:#fff;}
+
+  .result-score-wrap{margin:24px 0;}
+  .result-score-big{font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+  .results-screen.expert .result-score-big,.results-screen.great .result-score-big{color:#fff;}
+  .result-score-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .results-screen.expert .result-score-label,.results-screen.great .result-score-label{color:rgba(255,255,255,.4);}
+  .results-screen.good .result-score-label,.results-screen.keep-going .result-score-label{color:var(--ink-light);}
+
+  .result-sub{font-size:13px;font-weight:500;line-height:1.75;margin-bottom:36px;max-width:300px;}
+  .results-screen.expert .result-sub,.results-screen.great .result-sub{color:rgba(255,255,255,.5);}
+  .results-screen.good .result-sub,.results-screen.keep-going .result-sub{color:var(--ink-mid);}
+  .result-sub em{font-style:normal;font-weight:700;}
+  .results-screen.expert .result-sub em,.results-screen.great .result-sub em{color:rgba(255,255,255,.85);}
+  .results-screen.good .result-sub em,.results-screen.keep-going .result-sub em{color:var(--ink);}
+
+  .result-breakdown{
+    width:100%;max-width:320px;margin-bottom:32px;
+    border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,.1);
+  }
+  .results-screen.good .result-breakdown,.results-screen.keep-going .result-breakdown{border-color:var(--rule);}
+  .breakdown-row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .results-screen.good .breakdown-row,.results-screen.keep-going .breakdown-row{border-color:var(--rule);}
+  .breakdown-row:last-child{border-bottom:none;}
+  .bd-cat{font-size:10px;font-weight:700;letter-spacing:.06em;}
+  .results-screen.expert .bd-cat,.results-screen.great .bd-cat{color:rgba(255,255,255,.45);}
+  .results-screen.good .bd-cat,.results-screen.keep-going .bd-cat{color:var(--ink-light);}
+  .bd-score{font-size:11px;font-weight:800;}
+  .bd-score.perfect{color:var(--green);}
+  .bd-score.good-s{color:var(--yellow);}
+  .bd-score.low{color:var(--red);}
+
+  .result-retry{
+    width:100%;max-width:320px;padding:18px;border:none;border-radius:4px;
+    font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+    transition:background .15s;margin-bottom:12px;
+  }
+  .results-screen.expert .result-retry,.results-screen.great .result-retry{background:var(--green);color:#fff;}
+  .results-screen.good .result-retry,.results-screen.keep-going .result-retry{background:var(--ink);color:#fff;}
+  .result-retry:active{opacity:.85;}
+  .result-home{
+    font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    cursor:pointer;text-decoration:none;display:block;
+  }
+  .results-screen.expert .result-home,.results-screen.great .result-home{color:rgba(255,255,255,.3);}
+  .results-screen.good .result-home,.results-screen.keep-going .result-home{color:var(--ink-light);}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<!-- ── INTRO ── -->
+<div class="intro" id="introScreen">
+  <div class="intro-mark">
+    <span class="m-cafe">Cafe</span>
+    <span class="m-rule"></span>
+    <span class="m-neo">Neo</span>
+    <span class="m-rule"></span>
+    <span class="m-eatery">Eatery</span>
+  </div>
+  <div class="intro-badge"><span>★ Neo Expert Challenge</span></div>
+  <div class="intro-title">How well do you<br>know <em>Neo?</em></div>
+  <div class="intro-sub">
+    From our story and values to service standards and emergency procedures —
+    <strong>test your knowledge and earn your Neo Expert status.</strong>
+  </div>
+  <div class="intro-stats">
+    <div class="intro-stat">
+      <div class="intro-stat-num">20</div>
+      <div class="intro-stat-label">Questions</div>
+    </div>
+    <div class="intro-stat">
+      <div class="intro-stat-num">5</div>
+      <div class="intro-stat-label">Topics</div>
+    </div>
+    <div class="intro-stat">
+      <div class="intro-stat-num">★</div>
+      <div class="intro-stat-label">Expert Badge</div>
+    </div>
+  </div>
+  <button class="intro-start" onclick="startQuiz()">Take the Quiz →</button>
+</div>
+
+<!-- ── QUIZ ── -->
+<div class="quiz-screen" id="quizScreen">
+  <div class="quiz-header">
+    <div class="qh-row">
+      <div class="qh-back" onclick="confirmExit()">← Exit</div>
+      <div class="qh-counter" id="qCounter">1 of 20</div>
+      <div class="qh-score" id="qScore">0 correct</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:5%"></div></div>
+  </div>
+  <div class="quiz-body" id="quizBody"></div>
+</div>
+
+<!-- ── RESULTS ── -->
+<div class="results-screen" id="resultsScreen">
+  <div class="result-icon" id="resultIcon"></div>
+  <div class="result-rule" id="resultRule"></div>
+  <div class="result-badge" id="resultBadge"></div>
+  <div class="result-title" id="resultTitle"></div>
+  <div class="result-score-wrap">
+    <div class="result-score-big" id="resultScore"></div>
+    <div class="result-score-label" id="resultScoreLabel"></div>
+  </div>
+  <div class="result-sub" id="resultSub"></div>
+  <div class="result-breakdown" id="resultBreakdown"></div>
+  <button class="result-retry" onclick="startQuiz()">↺ Try Again</button>
+  <a class="result-home" onclick="goHome()">← Back to Hub</a>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ── OUR STORY ──
+  {
+    cat:"Our Story",
+    q:"Neo Café was founded in what year?",
+    opts:["1987","1993","1999","2001"],
+    correct:1,
+    explain:"Neo was founded in 1993 by Andrew Economous, at a time when Wellington's café scene was just finding its feet."
+  },
+  {
+    cat:"Our Story",
+    q:"What was the inspiration behind the name 'Neo'?",
+    opts:["A Greek word meaning 'new'","The traditional Greek Kafeneio — a gathering place for community","A tribute to the founder's hometown","The street Neo Café originally opened on"],
+    correct:1,
+    explain:"The name was inspired by the traditional Greek Kafeneio — a gathering place for community, conversation, and good coffee."
+  },
+  {
+    cat:"Our Story",
+    q:"Neo has held the number one café spot on TripAdvisor for how many consecutive years?",
+    opts:["Three","Four","Five","Seven"],
+    correct:2,
+    explain:"Neo has held the number one café spot on TripAdvisor for five consecutive years — something the team is quietly proud of."
+  },
+  // ── MISSION & VALUES ──
+  {
+    cat:"Mission & Values",
+    q:"What is Neo's mission statement?",
+    opts:[
+      "To serve the best coffee in Wellington",
+      "To create special moments and build community",
+      "To be Wellington's most loved café",
+      "To deliver exceptional food and service every day"
+    ],
+    correct:1,
+    explain:"At Neo, we are here to create special moments and build community. That mission is the North Star everything points back to."
+  },
+  {
+    cat:"Mission & Values",
+    q:"Neo's values are built on three pillars. Which of these is NOT one of them?",
+    opts:["Service","Product","Environment","Efficiency"],
+    correct:3,
+    explain:"The three pillars are Service, Product, and Environment. Efficiency matters — but it's not one of Neo's three core value pillars."
+  },
+  {
+    cat:"Mission & Values",
+    q:"Under the Product pillar, when do standards matter most?",
+    opts:[
+      "During quiet periods when you have more time",
+      "At the start of each shift",
+      "Exactly when it's busy — that's when they matter most",
+      "When a manager is watching"
+    ],
+    correct:2,
+    explain:"\"Standards don't slide when it's busy — that's exactly when they matter most.\" This is a core Neo principle."
+  },
+  {
+    cat:"Mission & Values",
+    q:"What does Neo's conduct code say you should do when in doubt?",
+    opts:[
+      "Ask a manager before acting",
+      "Choose what's best for the collective",
+      "Follow the staff handbook",
+      "Default to standard procedure"
+    ],
+    correct:1,
+    explain:"\"A team mindset — when in doubt, choose what's best for the collective.\" This is one of Neo's core conduct expectations."
+  },
+  // ── SERVICE STANDARDS ──
+  {
+    cat:"Service Standards",
+    q:"How quickly should you acknowledge a guest when they arrive?",
+    opts:["Within 10 seconds","Within 30 seconds","Within 5 seconds","As soon as you're free"],
+    correct:2,
+    explain:"The Neo standard is to acknowledge guests within 5 seconds — eye contact and a warm smile. First impressions set everything."
+  },
+  {
+    cat:"Service Standards",
+    q:"When should coffee be served relative to food?",
+    opts:[
+      "At the same time as food",
+      "After food arrives",
+      "Coffee lands first — always, unless the guest requests otherwise",
+      "When the kitchen gives the go-ahead"
+    ],
+    correct:2,
+    explain:"Coffee lands first — always, unless the guest requests otherwise. Getting timing right makes the whole experience flow."
+  },
+  {
+    cat:"Service Standards",
+    q:"What is the Neo approach to food service at the table?",
+    opts:[
+      "Ask who ordered what when you arrive at the table",
+      "Never auction food — know the table, know the dish",
+      "Serve the nearest person first",
+      "Call out the dish name loudly so guests can respond"
+    ],
+    correct:1,
+    explain:"Never auction food at the table. Know the dish before you pick it up — place it with intention and confidence."
+  },
+  {
+    cat:"Service Standards",
+    q:"How should you handle a guest complaint?",
+    opts:[
+      "Apologise and escalate to a manager immediately",
+      "Apologise sincerely, listen properly, act fast, and follow through",
+      "Offer a discount and move on",
+      "Listen and let the manager know after the shift"
+    ],
+    correct:1,
+    explain:"A complaint is not a failure — it's an opportunity. Apologise sincerely, listen, act fast, communicate clearly, and follow through."
+  },
+  {
+    cat:"Service Standards",
+    q:"After serving food, when should you check back in with the table?",
+    opts:[
+      "When you next pass by",
+      "At the end of the meal",
+      "1–2 minutes after food is served",
+      "Only if something looks wrong"
+    ],
+    correct:2,
+    explain:"Return 1–2 minutes after food is served and ask genuinely: \"How is everything tasting?\" Issues are far easier to resolve when caught early."
+  },
+  // ── EMERGENCY PROCEDURES ──
+  {
+    cat:"Procedures",
+    q:"Where is the assembly point in the event of a fire evacuation?",
+    opts:[
+      "The car park on Manners Street",
+      "Flagstaff Lane, next to Bello",
+      "The footpath directly outside Neo",
+      "Cuba Street mall area"
+    ],
+    correct:1,
+    explain:"In any fire or emergency evacuation, the assembly point is Flagstaff Lane, next to Bello. Every team member should know this."
+  },
+  {
+    cat:"Procedures",
+    q:"During an earthquake, what is the correct action?",
+    opts:[
+      "Exit the building immediately",
+      "Move guests toward the door",
+      "Drop, Cover, and Hold",
+      "Call 111 first"
+    ],
+    correct:2,
+    explain:"Drop, Cover, and Hold — this is the correct action during an earthquake. Do not try to move until the shaking stops."
+  },
+  {
+    cat:"Procedures",
+    q:"During a fire evacuation, what should kitchen staff do first?",
+    opts:[
+      "Assist guests to the exit immediately",
+      "Take the phone and check the bathrooms",
+      "Turn off all hobs and ovens and remove anything from direct heat",
+      "Call 111 straight away"
+    ],
+    correct:2,
+    explain:"Kitchen staff should turn off all hobs and ovens and remove anything from direct heat — then exit once guests have left."
+  },
+  // ── WORKING AT NEO ──
+  {
+    cat:"Working at Neo",
+    q:"When are timesheets paid?",
+    opts:["Fortnightly on Fridays","Weekly every Thursday","Weekly every Friday","Monthly at end of month"],
+    correct:1,
+    explain:"Neo uses Thankyou Payroll and pays weekly every Thursday. Timesheets must be signed off by a manager before you leave."
+  },
+  {
+    cat:"Working at Neo",
+    q:"How early should you aim to arrive before your shift starts?",
+    opts:["5 minutes","On time is fine","10 minutes","15 minutes"],
+    correct:2,
+    explain:"\"Early is on time\" — aim to arrive 10 minutes before your shift. It gives you time to settle before the shift begins."
+  },
+  {
+    cat:"Working at Neo",
+    q:"If you need to report a harassment or bullying concern and can't speak to your manager, who should you contact?",
+    opts:[
+      "The New Zealand Employment Relations Authority",
+      "Luke Crawford directly on 022 061 2609",
+      "Any other manager on duty",
+      "Send an email to the Neo team address"
+    ],
+    correct:1,
+    explain:"If you cannot speak to your manager, contact Luke Crawford directly on 022 061 2609. All reports are treated as confidential and acted on promptly."
+  },
+  {
+    cat:"Working at Neo",
+    q:"What is Neo's food cost target for new menu dishes?",
+    opts:["20–25%","27–32%","33–38%","15–20%"],
+    correct:1,
+    explain:"When developing new dishes, the target food cost is 27–32%. Speak to a manager if you need help with the calculation."
+  },
+  {
+    cat:"Working at Neo",
+    q:"What does Neo do with tips?",
+    opts:[
+      "Split equally among FOH staff each shift",
+      "Given to the employee of the month",
+      "Pooled and used for team events or staff welfare needs",
+      "Donated to The Free Store"
+    ],
+    correct:2,
+    explain:"Tips are pooled and used for team events or staff welfare needs — such as transport assistance when approved by a manager."
+  },
+
+  // ── BONUS POOL (drawn randomly) ──
+  {
+    cat:"Our Story",
+    q:"What did Neo's founder believe great hospitality could do?",
+    opts:[
+      "Build a successful business",
+      "Change someone's day",
+      "Create Wellington's best café",
+      "Bring people together over food"
+    ],
+    correct:1,
+    explain:"Neo is built on the genuine belief that great hospitality can change someone's day. That's been the spirit from day one."
+  },
+  {
+    cat:"Mission & Values",
+    q:"According to Neo's values, what should you never make a guest feel?",
+    opts:[
+      "Rushed",
+      "Like an inconvenience",
+      "Overlooked",
+      "Uncomfortable"
+    ],
+    correct:1,
+    explain:"\"If a guest feels like an inconvenience, they won't return.\" Every guest deserves to feel seen, welcome, and genuinely cared for."
+  },
+  {
+    cat:"Mission & Values",
+    q:"Neo supports a local social enterprise that rescues unsold food. What is it called?",
+    opts:["KiwiHarvest","The Free Store","Food Rescue Wellington","Eat My Lunch"],
+    correct:1,
+    explain:"Neo supports The Free Store — donating leftover food daily, providing space for their events, and supporting their fundraising."
+  },
+  {
+    cat:"Service Standards",
+    q:"What is the Neo standard for offering a second round?",
+    opts:[
+      "Only offer if the guest asks",
+      "Offer after clearing the table",
+      "Offer with warmth — never with pressure",
+      "Always offer before clearing plates"
+    ],
+    correct:2,
+    explain:"\"Can I tempt you with another coffee, or something from the cabinet?\" Offer with warmth. Never with pressure."
+  },
+  {
+    cat:"Service Standards",
+    q:"What does Neo say about the till and payment interaction?",
+    opts:[
+      "Keep it quick — guests want to leave efficiently",
+      "The till is our final touchpoint — make the last moment as warm as the first",
+      "Always upsell at the till",
+      "Process payment and thank them for visiting"
+    ],
+    correct:1,
+    explain:"The till is Neo's final touchpoint and the last impression we leave. Make the last moment as warm as the first."
+  },
+  {
+    cat:"Service Standards",
+    q:"When should you clear plates from a table?",
+    opts:[
+      "As soon as each guest finishes",
+      "Once the whole table has finished, or when plates are being pushed aside",
+      "After 10 minutes regardless",
+      "When the guest asks you to"
+    ],
+    correct:1,
+    explain:"Clear once the whole table has finished, or when plates are being pushed aside. Never make guests feel rushed."
+  },
+  {
+    cat:"Procedures",
+    q:"During a fire evacuation, what is the manager on duty's first responsibility?",
+    opts:[
+      "Call 111 immediately",
+      "Escort guests to the assembly point",
+      "Take the phone and check all bathrooms to confirm the building is clear",
+      "Close all windows and doors"
+    ],
+    correct:2,
+    explain:"The manager on duty takes the phone, checks all bathrooms to confirm the building is clear, then closes the door and calls 111."
+  },
+  {
+    cat:"Working at Neo",
+    q:"How far in advance are rosters posted?",
+    opts:[
+      "Two weeks in advance",
+      "Three days in advance",
+      "One week in advance",
+      "At the start of each week"
+    ],
+    correct:2,
+    explain:"Rosters are posted one week in advance. Notify your manager of unavailability as early as possible."
+  },
+  {
+    cat:"Working at Neo",
+    q:"How should you request annual leave at Neo?",
+    opts:[
+      "Verbally to your manager only",
+      "In writing via the appropriate Slack channel and verbally to your manager",
+      "By filling in a leave form",
+      "Via email to the management team"
+    ],
+    correct:1,
+    explain:"Request leave in writing via the appropriate Slack channel and verbally to your manager. Leave is approved based on business needs."
+  },
+  {
+    cat:"Working at Neo",
+    q:"What should you do if you can't make a shift due to sickness?",
+    opts:[
+      "Text your manager as early as possible",
+      "Post in the team Slack channel",
+      "Call your manager as soon as you know — a call is always preferred over a text",
+      "Arrange a replacement and let the manager know"
+    ],
+    correct:2,
+    explain:"Call your manager as soon as you know you can't make a shift — a call is always preferred over a text message."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+let categoryScores = {};
+let shuffled = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  current = 0; score = 0; answered = false; categoryScores = {};
+  shuffled = shuffle(QUESTIONS).slice(0, 20);
+  document.getElementById("introScreen").style.display = "none";
+  document.getElementById("resultsScreen").style.display = "none";
+  const qs = document.getElementById("quizScreen");
+  qs.style.display = "flex";
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = shuffled[current];
+  const total = shuffled.length;
+  const pct = Math.round(((current) / total) * 100);
+  document.getElementById("progressFill").style.width = Math.max(pct, 4) + "%";
+  document.getElementById("qCounter").textContent = `${current + 1} of ${total}`;
+  document.getElementById("qScore").textContent = `${score} correct`;
+
+  const letters = ["A","B","C","D"];
+  document.getElementById("quizBody").innerHTML = `
+    <div class="q-category">${q.cat}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options">
+      ${q.opts.map((o, i) => `
+        <div class="option" onclick="answer(${i})" id="opt${i}">
+          <div class="opt-letter">${letters[i]}</div>
+          ${o}
+        </div>
+      `).join("")}
+    </div>
+    <div class="feedback" id="feedback">
+      <div class="feedback-label" id="feedbackLabel"></div>
+      <div id="feedbackText"></div>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQ()">
+      ${current === shuffled.length - 1 ? "See Results ★" : "Next Question →"}
+    </button>
+  `;
+}
+
+function answer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = shuffled[current];
+  const isCorrect = idx === q.correct;
+  if (isCorrect) {
+    score++;
+    document.getElementById("qScore").textContent = `${score} correct`;
+    if (!categoryScores[q.cat]) categoryScores[q.cat] = { correct: 0, total: 0 };
+    categoryScores[q.cat].correct++;
+  }
+  if (!categoryScores[q.cat]) categoryScores[q.cat] = { correct: 0, total: 0 };
+  categoryScores[q.cat].total++;
+
+  // Style options
+  for (let i = 0; i < q.opts.length; i++) {
+    const el = document.getElementById("opt" + i);
+    if (i === idx && isCorrect) el.className = "option selected-correct";
+    else if (i === idx && !isCorrect) el.className = "option selected-wrong";
+    else if (i === q.correct) el.className = "option reveal-correct";
+    else el.className = "option disabled";
+  }
+
+  // Feedback
+  const fb = document.getElementById("feedback");
+  const fbl = document.getElementById("feedbackLabel");
+  const fbt = document.getElementById("feedbackText");
+  fb.className = "feedback " + (isCorrect ? "correct" : "wrong");
+  fbl.textContent = isCorrect ? "✓ Correct" : "✗ Not quite";
+  fbt.textContent = q.explain;
+  fb.style.display = "block";
+  document.getElementById("nextBtn").style.display = "block";
+}
+
+function nextQ() {
+  current++;
+  if (current >= shuffled.length) { showResults(); return; }
+  renderQuestion();
+  window.scrollTo(0, 0);
+  document.querySelector(".quiz-body").scrollTop = 0;
+}
+
+function showResults() {
+  document.getElementById("quizScreen").style.display = "none";
+  const rs = document.getElementById("resultsScreen");
+  rs.style.display = "flex";
+  const total = shuffled.length;
+  const pct = Math.round((score / total) * 100);
+
+  let tier, icon, badge, title, sub;
+  if (pct === 100) {
+    tier = "expert"; icon = "★"; badge = "Neo Expert";
+    title = "Perfect Score!";
+    sub = `You know Neo inside out. <em>Every question, every topic — nailed.</em> You're exactly the kind of team member that makes Neo what it is.`;
+  } else if (pct >= 80) {
+    tier = "great"; icon = "✦"; badge = "Almost There";
+    title = "Great Knowledge!";
+    sub = `You really know your Neo. <em>A strong result — keep reading the handbook</em> and you'll nail that perfect score next time.`;
+  } else if (pct >= 60) {
+    tier = "good"; icon = "◆"; badge = "Building Knowledge";
+    title = "Good Start";
+    sub = `You've got a solid base. <em>Spend some time with the Staff Handbook and Guest Journey</em> — then come back and give it another shot.`;
+  } else {
+    tier = "keep-going"; icon = "◇"; badge = "Keep Going";
+    title = "Room to Grow";
+    sub = `No worries — this is how you learn. <em>Read through the key documents in the hub</em>, then try again. Every Neo Expert started somewhere.`;
+  }
+
+  rs.className = "results-screen " + tier;
+  document.getElementById("resultIcon").textContent = icon;
+  document.getElementById("resultBadge").textContent = badge;
+  document.getElementById("resultTitle").textContent = title;
+  document.getElementById("resultScore").textContent = `${score}/${total}`;
+  document.getElementById("resultScoreLabel").textContent = `${pct}% correct`;
+  document.getElementById("resultSub").innerHTML = sub;
+
+  // Breakdown
+  const cats = Object.keys(categoryScores);
+  document.getElementById("resultBreakdown").innerHTML = cats.map(c => {
+    const cs = categoryScores[c];
+    const cpct = Math.round((cs.correct / cs.total) * 100);
+    const cls = cpct === 100 ? "perfect" : cpct >= 60 ? "good-s" : "low";
+    return `<div class="breakdown-row">
+      <span class="bd-cat">${c}</span>
+      <span class="bd-score ${cls}">${cs.correct}/${cs.total}</span>
+    </div>`;
+  }).join("");
+}
+
+function confirmExit() {
+  if (confirm("Exit the quiz? Your progress will be lost.")) goHome();
+}
+
+function goHome() {
+  document.getElementById("quizScreen").style.display = "none";
+  document.getElementById("resultsScreen").style.display = "none";
+  document.getElementById("introScreen").style.display = "flex";
+}
+</script>
+</body>
+</html>
