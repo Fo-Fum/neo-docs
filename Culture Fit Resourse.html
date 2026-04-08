@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How We Lead at Neo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #009876;
+    --green-dark: #007a5e;
+    --green-light: #e8f7f3;
+    --yellow: #FFB838;
+    --yellow-light: #fff8e6;
+    --ink: #1a1a1a;
+    --ink-soft: #3a3a3a;
+    --grey: #6b7280;
+    --grey-light: #f5f5f3;
+    --white: #ffffff;
+    --rule: #e5e7eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--grey-light);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-circle-1 {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,184,56,0.15);
+    top: -200px; right: -200px;
+  }
+  .cover-circle-2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,152,118,0.2);
+    bottom: -100px; left: -100px;
+  }
+  .cover-circle-3 {
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(0,152,118,0.06);
+    top: 40%; right: 10%;
+  }
+
+  .cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative; z-index: 1;
+  }
+
+  .cover-brand {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+  }
+
+  .cover-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--yellow);
+    text-transform: uppercase;
+    border: 1px solid rgba(255,184,56,0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+
+  .cover-body {
+    position: relative; z-index: 1;
+  }
+
+  .cover-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 7vw, 80px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.05;
+    margin-bottom: 28px;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: var(--yellow);
+  }
+
+  .cover-subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    max-width: 460px;
+  }
+
+  .cover-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative; z-index: 1;
+  }
+
+  .cover-note {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.25);
+    text-transform: uppercase;
+  }
+
+  .cover-year {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.2);
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+
+  /* ── INTRO STRIP ── */
+  .intro-strip {
+    background: var(--green);
+    padding: 40px 60px;
+    margin-bottom: 0;
+  }
+
+  .intro-strip p {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.8;
+    max-width: 640px;
+  }
+
+  .intro-strip strong {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* ── SECTION CARDS ── */
+  .card {
+    background: var(--white);
+    margin-bottom: 3px;
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    min-height: 0;
+    transition: box-shadow 0.2s;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    z-index: 2;
+    position: relative;
+  }
+
+  .card-num {
+    background: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 36px;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .card-num.yellow { background: var(--yellow); color: rgba(0,0,0,0.4); }
+  .card-num.green { background: var(--green); color: rgba(255,255,255,0.4); }
+
+  .card-inner {
+    padding: 36px 44px 36px 36px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .card:last-child .card-inner { border-bottom: none; }
+
+  .card-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  .card-title em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .card-body {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+
+  .card-body p + p {
+    margin-top: 10px;
+  }
+
+  /* ── PULL QUOTE ── */
+  .pull-quote {
+    margin-top: 18px;
+    padding: 16px 20px;
+    border-left: 3px solid var(--yellow);
+    background: var(--yellow-light);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  /* ── INLINE LIST ── */
+  .inline-list {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .inline-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .inline-list-item::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  /* ── CLOSING ── */
+  .closing {
+    background: var(--ink);
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .closing-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+
+  .closing-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  .closing-body {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.8;
+    max-width: 560px;
+  }
+
+  .closing-sig {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--yellow);
+    letter-spacing: 0.05em;
+    margin-top: 8px;
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .divider {
+    background: var(--grey-light);
+    padding: 18px 60px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cover-eyebrow { animation: fadeUp 0.6s ease both; }
+  .cover-title { animation: fadeUp 0.7s 0.1s ease both; }
+  .cover-subtitle { animation: fadeUp 0.7s 0.2s ease both; }
+
+  @media (max-width: 600px) {
+    .cover { padding: 36px; }
+    .intro-strip { padding: 32px 28px; }
+    .card { grid-template-columns: 48px 1fr; }
+    .card-inner { padding: 28px 24px 28px 20px; }
+    .closing { padding: 40px 28px; }
+    .divider { padding: 16px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── COVER ── -->
+<div class="cover">
+  <div class="cover-circle-1"></div>
+  <div class="cover-circle-2"></div>
+  <div class="cover-circle-3"></div>
+
+  <div class="cover-top">
+    <div class="cover-brand">Neo Café Eatery</div>
+    <div class="cover-tag">Leadership · Internal</div>
+  </div>
+
+  <div class="cover-body">
+    <div class="cover-eyebrow">How We Lead</div>
+    <div class="cover-title">Leadership<br>at <em>Neo.</em></div>
+    <div class="cover-subtitle">A quick reference guide to the ideas that shape how we lead, hire, and build culture at Neo Café Eatery.</div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-note">For use in management hiring conversations</div>
+    <div class="cover-year">Neo · 2026</div>
+  </div>
+</div>
+
+<!-- ── INTRO STRIP ── -->
+<div class="intro-strip">
+  <p>This guide captures the <strong>nine ideas at the core of leadership at Neo</strong>. Use it to articulate how we think, what we value, and the kind of people we're looking to bring into this team. It's not a checklist — it's a conversation starter.</p>
+</div>
+
+<!-- ── OPENER ── -->
+<div style="background:var(--white); padding: 48px 60px; border-bottom: 1px solid var(--rule);">
+  <p style="font-family:'Playfair Display',serif; font-size:18px; font-weight:400; line-height:1.8; color:var(--ink); max-width:680px;">Leadership at Neo is about presence over title — showing up with intention, serving your team from below rather than directing from above, and holding the balance between the day-to-day operation and the bigger picture that only you can see. At its heart, Neo exists to make people feel genuinely welcome, and everything — the culture, the team, the food and drink we put on the table — flows from that. A great Neo manager builds one unified team, models the values they want to see, develops people not just as performers but as human beings, and leads with honesty, creativity, and care. The standard is high, but it's worth holding — because the people are worth it.</p>
+</div>
+
+<!-- ── DIVIDER ── -->
+<div class="divider">The Nine Ideas</div>
+
+<!-- ── CARD 1 ── -->
+<div class="card">
+  <div class="card-num">01</div>
+  <div class="card-inner">
+    <div class="card-label">Philosophy</div>
+    <div class="card-title">Leadership has nothing to do with a title.</div>
+    <div class="card-body">
+      <p>It's about presence — showing up with intention, setting the standard, and creating the conditions for the people around you to do their best work.</p>
+      <p>The structure at Neo is deliberately flipped. Our job is not to direct from above, but to serve from below — clearing obstacles, creating clarity, and investing in the people around us. The whole operation balances on that point. When we lead poorly, it doesn't take long for everything to wobble.</p>
+      <div class="pull-quote">Great leaders aren't the loudest voice in the room. They're the most consistent one.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CARD 2 ── -->
+<div class="card">
+  <div class="card-num">02</div>
+  <div class="card-inner">
+    <div class="card-label">People</div>
+    <div class="card-title">The best outcome isn't a well-run shift.</div>
+    <div class="card-body">
+      <p>It's a team member who leaves Neo more capable, more confident, and more themselves than when they arrived. We are investing in people — their character, their mindset, and their practical skills.</p>
+      <p>This means paying attention to who each person is becoming, not just how they perform. We want every team member to discover their why, serve from the heart, and leave Neo better equipped for whatever comes next in their life.</p>
+      <div class="pull-quote">The best outcome isn't a well-run shift. It's a better person walking out the door.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CARD 3 ── -->
+<div class="card">
+  <div class="card-num green">03</div>
+  <div class="card-inner">
+    <div class="card-label">Purpose</div>
+    <div class="card-title">Hospitality is the <em>foundation</em> everything is built on.</div>
+    <div class="card-body">
+      <p>A thriving business, a motivated team, a positive impact on our community — none of it happens without exceptional hospitality. Exceptional hospitality is the art of making people feel genuinely welcome, seen, and cared for. Not just accommodated.</p>
+      <p>It goes beyond meeting expectations to creating moments people remember. As a management team, our job is to create the conditions where that can actually happen — every shift, every table.</p>
+      <div class="inline-list">
+        <div class="inline-list-item">Anticipation over reaction — notice needs before they're expressed</div>
+        <div class="inline-list-item">Warmth without performance — genuine care feels effortless, not scripted</div>
+        <div class="inline-list-item">Graceful recovery — how a mistake is handled often matters more than the mistake itself</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CARD 4 ── -->
+<div class="card">
+  <div class="card-num">04</div>
+  <div class="card-inner">
+    <div class="card-label">Team Unity</div>
+    <div class="card-title">Neo only has one team.</div>
+    <div class="card-body">
+      <p>Neo has a kitchen. Neo has a F.O.H. But Neo only has one team. In hospitality, it's easy for a divide to form between kitchen and front of house — different pressures, different rhythms, different frustrations. That divide is one of the most common culture killers in any café or restaurant.</p>
+      <p>The customer doesn't experience "the kitchen" and "the floor" separately. They experience Neo. Whatever goes wrong, we all carry the result. And when things go right — that's everyone's win. Barista, chef, runner, dishy. All of it, together.</p>
+      <div class="pull-quote">Your job is to be a bridge at the pass. Champion both sides. Blame neither. If there's a problem, it's ours to solve together.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CARD 5 ── -->
+<div class="card">
+  <div class="card-num yellow">05</div>
+  <div class="card-inner">
+    <div class="card-label">Culture</div>
+    <div class="card-title">Culture is caught, not taught.</div>
+    <div class="card-body">
+      <p>At Neo, values aren't aspirational language on a wall. They're the daily practice of how we lead, serve, and care for one another. As managers, we don't just endorse these values — we embody them.</p>
+      <p>Your team will not rise consistently above what they see modelled in front of them. The standard you set and hold <em>is</em> the culture you create. That also means holding people to account when they fall short — not harshly, but clearly and promptly. Letting a values breach slide once signals it's acceptable.</p>
+      <div class="pull-quote">The standard you set — and hold — is the culture you create.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CARD 6 ── -->
+<div class="card">
+  <div class="card-num green">06</div>
+  <div class="card-inner">
+    <div class="card-label">Role</div>
+    <div class="card-title">Your highest-value contribution is <em>creative and strategic.</em></div>
+    <div class="card-body">
+      <p>As a manager, you have to hold down a section and attend to the big picture — and it's not always easy to get that balance right. The day-to-day is important and essential, but it can't be allowed to crowd out the work that only you can do.</p>
+      <div class="inline-list">
+        <div class="inline-list-item">Setting direction and holding the big picture</div>
+        <div class="inline-list-item">Making the calls that only we can make</div>
+        <div class="inline-list-item">Solving problems at their root, not just their surface</div>
+        <div class="inline-list-item">Coaching and building team capability</div>
+        <div class="inline-list-item">Innovating and evolving our menu and drink offering</div>
+      </div>
+      <div class="pull-quote">Think of yourself as the oil in the engine. When you're doing your job well, everything runs smoothly — and most people won't even notice. That's the point.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CARD 7 ── -->
+<div class="card">
+  <div class="card-num">07</div>
+  <div class="card-inner">
+    <div class="card-label">Coaching</div>
+    <div class="card-title">Feedback is a gift, not a weapon.</div>
+    <div class="card-body">
+      <p>The best managers at Neo aren't just operators — they're developers of people. Coaching is not a formal event; it's a habit. A two-minute conversation after a shift, a quiet word at the pass, a thoughtful check-in mid-service.</p>
+      <p>Feedback should be specific, timely, and delivered with the person's growth in mind — not your frustration. Positive feedback works the same way. Specificity is what makes praise land. "Great job today" is forgotten by the car park. Naming exactly what someone did well — and why it mattered — shows them what to repeat.</p>
+      <div class="pull-quote">Recognition without specificity fades quickly. When you name it precisely, it sticks.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CARD 8 ── -->
+<div class="card">
+  <div class="card-num yellow">08</div>
+  <div class="card-inner">
+    <div class="card-label">Decisions</div>
+    <div class="card-title">A good decision made promptly beats a perfect one made too late.</div>
+    <div class="card-body">
+      <p>Managers make dozens of decisions every shift. The goal isn't perfection — it's sound judgment, made quickly enough to keep the operation moving. Indecision has a cost too: it creates uncertainty, slows the team, and signals a lack of confidence.</p>
+      <p>When you're unsure, run it through three questions: Is this right for the customer? Is this right for the team? Is this right for the business? If all three are yes — move.</p>
+      <div class="pull-quote">Own your decisions. When they're right, share the credit. When they're wrong, say so, learn from it, and move on.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CARD 9 ── -->
+<div class="card">
+  <div class="card-num green">09</div>
+  <div class="card-inner">
+    <div class="card-label">Support</div>
+    <div class="card-title">You're not alone in this.</div>
+    <div class="card-body">
+      <p>Leadership is one of the most stretching, rewarding, and occasionally humbling things a person can take on. What we describe at Neo is a high bar — servant leadership, exceptional hospitality, intentional culture. None of it happens by accident, and none of it is easy to sustain.</p>
+      <p>What we ask is not perfection. We ask for consistency, integrity, and care. On the hard days — when the team is tired, the kitchen is behind, and nothing seems to be going right — come back to why we're here.</p>
+      <div class="pull-quote">To create special moments. To build community. To make people feel truly welcome.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CLOSING ── -->
+<div class="closing">
+  <div class="closing-label">A Final Word</div>
+  <div class="closing-title">Lead with your hands,<br>your mind, and your heart.</div>
+  <div class="closing-body">Set the tone. Hold the standard. Take care of your people. And trust that when you do — consistently, generously, and with intention — something remarkable happens in this place. Welcome to the team. We're glad you're here.</div>
+  <div class="closing-sig">— The Neo Leadership Team · Neo Café Eatery · Wellington · Est. 1993</div>
+</div>
+
+</body>
+</html>
